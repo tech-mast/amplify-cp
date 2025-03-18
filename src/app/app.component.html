@@ -1,21 +1,144 @@
-
-  <Button
-    block
-    variant="success"
-    (click)="test()"
-  >
-    Federated Sign In
-  </Button>
-
-  <h1>Hello  todos</h1> 
-<!-- <amplify-authenticator [hideSignUp]="true">
-  <ng-template
-    amplifySlot="authenticated"
-    let-user="user"
-    let-signOut="signOut"
-  >
-  <h1>Hello {{user?.signInDetails?.loginId}}'s todos</h1> -->
-    <!-- <app-todos></app-todos> -->
-    <!-- <button (click)="signOut()">Sign Out</button>
+<main>
+  <ng-template #noAuth>
+  <button id="login" style="border:none;" (click)="login()"></button>
+  <hr />
   </ng-template>
-</amplify-authenticator> -->
+
+  <div *ngIf="isAuthenticated; else noAuth">
+  <!-- <br />  
+  Is Authenticated: {{ isAuthenticated }} -->
+  <br />
+  <h1>
+  Welcome &nbsp; {{email}} &nbsp; 🙂
+  </h1>
+  <br />
+
+  <form [formGroup]="userForm" (ngSubmit)="submitForm()" style="padding: 50px">
+    <div>
+      <label for="name">Customer Name</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        formControlName="name"
+        placeholder="name"
+      />
+    </div>
+    <div>
+      <label for="email">Cubing Factor #1</label>
+      <input
+        type="number"
+        id="email"
+        name="email"
+        formControlName="email"
+        placeholder="5000"
+      />
+    </div>
+
+
+    <mat-form-field>
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+        <input matStartDate formControlName="start" placeholder="Start date">
+        <input matEndDate formControlName="end" placeholder="End date">
+      </mat-date-range-input>
+      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    
+      @if (range.controls.start.hasError('matStartDateInvalid')) {
+        <mat-error>Invalid start date</mat-error>
+      }
+      @if (range.controls.end.hasError('matEndDateInvalid')) {
+        <mat-error>Invalid end date</mat-error>
+      }
+    </mat-form-field>
+    
+    <p>Selected range: {{range.value | json}}</p>
+
+
+    <!-- <mat-form-field appearance="outline">
+
+      <input matInput formControlName="releasedAt" [matDatepicker]="releasedAtPicker">
+    
+      <mat-datepicker-toggle matPrefix [for]="releasedAtPicker">
+        <mat-icon matDatepickerToggleIcon>
+          calendar_month
+        </mat-icon>
+      </mat-datepicker-toggle>
+    
+      <mat-datepicker #releasedAtPicker>
+    
+      </mat-datepicker>
+    
+    </mat-form-field> -->
+
+    <!-- <div formGroupName="address">
+      <label for="street">Street</label>
+      <input
+        type="text"
+        id="street"
+        name="street"
+        formControlName="street"
+        placeholder="Street"
+      />
+      <label for="city">Contract No.</label>
+      <input
+        type="text"
+        id="city"
+        name="city"
+        formControlName="city"
+        placeholder="city"
+      />
+    </div> -->
+    <div formArrayName="phoneNumbers">
+      <div *ngFor="let phoneNum of phoneNumbers.controls; let i = index">
+        <label>Contract Number {{ i + 1 }}</label>
+        <input type="text" [formControlName]="i" />
+        <button type="button" (click)="removePhoneNumber(i)">Remove</button>
+      </div>
+    </div>
+    <div>
+      <button type="button" (click)="addPhoneNumber()">Add Contract Number</button>
+    </div>
+
+    <!-- product selection -->
+    
+    <div class="mb-3">
+      <select class="custom-select" (change)="changeCity($event)" formControlName="cityName">
+        <option value="">Choose the product</option>
+        <option *ngFor="let city of City" [ngValue]="city">{{city}}</option>
+      </select>
+
+      <!-- error block -->
+      <div class="invalid-feedback" *ngIf="isSubmitted && cityName.errors?.['required']">
+        <sup>*</sup>Please enter the product name
+      </div>
+    </div>      
+
+
+    <div>
+      <!-- <button type="submit" [disabled]="!userForm.valid">Submit</button> -->
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+
+
+  <button id = "logout" (click)="logout()">Logout</button>
+  <!-- userData
+  <pre>{{ userData$ | async | json }}</pre> -->
+
+  </div>
+
+
+
+<!-- file-upload.component.html -->
+<div>
+  <input type="file" (change)="onFileSelected($event)" />
+  <button (click)="onUpload()">Upload</button>
+</div>
+
+
+</main>
+
+
